@@ -1,0 +1,10 @@
+{
+  "name": "today-surname-stands-for",
+  "scripts": {
+    "start": "micro index.js"
+  },
+  "dependencies": {
+    "micro": "^7.3.0",
+    "request": "2.81.0"
+  }
+}
