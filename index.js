@@ -1,7 +1,7 @@
 const url = require("url");
 const {send} = require("micro");
 var get = require("request");
-const oxfordDictionaryCredentials = require("./cred");
+const oxfordDictionaryCredentials = {"app_id":process.env.app_id, "app_key": process.env.app_key}
 
 var app_id = oxfordDictionaryCredentials.app_id;
 var app_key = oxfordDictionaryCredentials.app_key;
