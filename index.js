@@ -18,9 +18,10 @@ module.exports = async req => {
     if (!query.text) {
         surname = "McCulloch";
     }
-    var word = await get_surname_synonym(surname);
-
-    return "Today '" + surname + "' stands for " + JSON.stringify(word);
+    synonym = await get_surname_synonym(surname);
+    word =synonym[0]; word_id=synonym[1];
+    var definition = await get_word_definition(word_id);
+    return "Today '" + surname + "' stands for " + JSON.stringify(word) + "\n" + definition;
 }
 
 
@@ -49,7 +50,7 @@ function get_index(n, s){
     return j;
 }
 
-function get_surname_synonym(surname, callback){
+function get_surname_synonym(surname){
     promise = new Promise ((resolve, reject) => {
         word = surname;
         get({url: oxurl, headers: headers}, (err, res, body) => {
@@ -64,8 +65,47 @@ function get_surname_synonym(surname, callback){
             }
             n = b.results.length;
             j = get_index(n, surname.length);
+            word_id = b.results[j].id;
             word = b.results[j].word;
-            resolve(word);
+            resolve([word, word_id]);
+        })
+    })
+    return promise;
+}
+
+
+
+function get_word_definition(word){
+    defurl = "https://od-api.oxforddictionaries.com:443/api/v1/entries/en/"+word+"/definitions";
+    promise = new Promise ((resolve, reject) => {
+        get({url:defurl, headers:headers}, (err, res, body)=>{
+
+            if (err){
+                reject(err);
+            }
+            try{
+                b = JSON.parse(body);
+            } catch (e) {
+                reject(body);
+            }
+
+            a = b.results.map(function(c){
+                my_defs = [];
+                c.lexicalEntries.forEach(function(LexEntries){
+                    LexEntries.entries.forEach(function(entry){
+                        definition = [];
+                        entry.senses.forEach(function(sense){
+                            definition.push(sense.definitions);
+                        })
+                    })
+
+                    lexicalCategory = LexEntries.lexicalCategory;
+                    my_defs.push({"category": lexicalCategory, "definition":definition})
+                })
+                return my_defs;
+            })
+
+            resolve(JSON.stringify(a));
         })
     })
     return promise;
