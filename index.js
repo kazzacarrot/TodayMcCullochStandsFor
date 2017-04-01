@@ -1,4 +1,5 @@
 const url = require("url");
+const gen = require("random-seed");
 const {send} = require("micro");
 var get = require("request");
 const oxfordDictionaryCredentials = {"app_id":process.env.app_id, "app_key": process.env.app_key}
@@ -25,29 +26,12 @@ module.exports = async req => {
 }
 
 
-function get_day_of_the_year() {
-    var now = new Date();
-    var start = new Date(now.getFullYear(), 0, 0);
-    var diff = now - start;
-    var oneDay = 1000 * 60 * 60 * 24;
-    var day = Math.floor(diff / oneDay);
-    return day;
-}
+function get_index(n, s=""){
+    today = new Date();
 
-function get_index(n, s){
-    i = get_day_of_the_year();
+    var rand = gen.create(today.toString() + s);
 
-    if (s){
-        i *= s;
-    }
-    if (i > n) { // there are more days in a year than results.
-        j = i % n;
-    }
-    else{
-        j = i;
-    }
-
-    return j;
+    return rand.intBetween(0, n);
 }
 
 function get_surname_synonym(surname){

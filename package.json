@@ -1,10 +1,11 @@
 {
-    "name": "today-surname-stands-for",
-    "scripts": {
-        "start": "app_id='blahblah' app_key='keykeykey' micro index.js"
-    },
-    "dependencies": {
-        "micro": "^7.3.0",
-        "request": "2.81.0"
-    }
+  "name": "today-surname-stands-for",
+  "scripts": {
+  "start": "app_id='blahblah' app_key='keykeykey' micro index.js"
+  },
+  "dependencies": {
+    "micro": "^7.3.0",
+    "random-seed": "^0.3.0",
+    "request": "2.81.0"
+  }
 }
