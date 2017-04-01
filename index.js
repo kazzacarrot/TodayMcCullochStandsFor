@@ -6,7 +6,7 @@ const oxfordDictionaryCredentials = {"app_id":process.env.app_id, "app_key": pro
 
 var app_id = oxfordDictionaryCredentials.app_id;
 var app_key = oxfordDictionaryCredentials.app_key;
-var registers = ["Rare", "Ironic", "Literary", "Offensive", "Vulgar_Slang"];
+var registers = ["Rare", "Ironic", "Literary", "Offensive" ];
 var register_of_the_day = registers[get_index(5)];
 var oxurl =  'https://od-api.oxforddictionaries.com:443/api/v1/wordlist/en/registers=' + register_of_the_day;
 var headers = {'app_id': app_id, 'app_key': app_key};
