@@ -22,7 +22,9 @@ module.exports = async req => {
     synonym = await get_surname_synonym(surname);
     word =synonym[0]; word_id=synonym[1];
     var definition = await get_word_definition(word_id);
-    return "Today '" + surname + "' stands for " + JSON.stringify(word) + "\n" + definition;
+    var ret = {"Surname":surname,
+               "stands_for": definition};
+    return JSON.stringify(ret);
 }
 
 
@@ -69,27 +71,29 @@ function get_word_definition(word){
             }
             try{
                 b = JSON.parse(body);
+
+                ret = b.results.map(function(c){
+                    my_defs = [];
+                    word = c.word;
+                    c.lexicalEntries.forEach(function(LexEntries){
+                        lexicalCategory = LexEntries.lexicalCategory;
+                        LexEntries.entries.forEach(function(entry){
+                            entry.senses.forEach(function(sense){
+                                sense.definitions.forEach(function(definition){
+                                    my_defs.push({"word": word, "category": lexicalCategory, "definition": definition});
+                                })
+                            })
+                        })
+
+                    })
+                    return my_defs;
+                })
+
+               resolve(ret);
+
             } catch (e) {
                 reject(body);
             }
-
-            a = b.results.map(function(c){
-                my_defs = [];
-                c.lexicalEntries.forEach(function(LexEntries){
-                    LexEntries.entries.forEach(function(entry){
-                        definition = [];
-                        entry.senses.forEach(function(sense){
-                            definition.push(sense.definitions);
-                        })
-                    })
-
-                    lexicalCategory = LexEntries.lexicalCategory;
-                    my_defs.push({"category": lexicalCategory, "definition":definition})
-                })
-                return my_defs;
-            })
-
-            resolve(JSON.stringify(a));
         })
     })
     return promise;
